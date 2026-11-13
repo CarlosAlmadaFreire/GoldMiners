@@ -1,0 +1,19 @@
+# Gradle
+.gradle/
+build/
+
+# Logs
+log/
+*.log
+
+# macOS
+.DS_Store
+__MACOSX/
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Java
+*.class
