@@ -1,0 +1,20 @@
+name: gold-miners
+services:
+  simulacao:
+    build:
+      context: .
+      args:
+        LOCAL_UID: ${LOCAL_UID:-1000}
+        LOCAL_GID: ${LOCAL_GID:-1000}
+    working_dir: /app
+    # Match host ownership for bind-mounted results; no root-owned output files.
+    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
+    environment:
+      JAVA_TOOL_OPTIONS: -Djava.awt.headless=true
+      GRADLE_USER_HOME: /home/gradle/.gradle
+      TZ: America/Sao_Paulo
+    volumes:
+      - gradle-cache:/home/gradle/.gradle
+      - ./resultados:/app/resultados
+volumes:
+  gradle-cache:

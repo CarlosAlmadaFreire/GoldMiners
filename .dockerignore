@@ -1,0 +1,13 @@
+.git
+.gradle
+build
+log
+resultados
+__pycache__
+**/__pycache__
+*.docx
+*.zip
+doc
+.agents
+.codex
+.aws

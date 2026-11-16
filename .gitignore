@@ -17,3 +17,6 @@ __MACOSX/
 
 # Java
 *.class
+
+# Python experiment runner
+__pycache__/

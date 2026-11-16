@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<organisational-specification id="gold_miners" os-version="0.7" xmlns="http://moise.sourceforge.net/os">
+  <structural-specification>
+    <role-definitions><role id="scout"/><role id="miner"/><role id="coordinator"/></role-definitions>
+    <group-specification id="team">
+      <roles><role id="scout" min="0" max="8"/><role id="miner" min="0" max="8"/><role id="coordinator" min="1" max="1"/></roles>
+      <formation-constraints><compatibility from="scout" to="miner" type="compatibility" bi-dir="true"/></formation-constraints>
+    </group-specification>
+  </structural-specification>
+  <functional-specification>
+    <scheme id="mining">
+      <goal id="compete"><plan operator="parallel">
+        <goal id="explore" type="maintenance"/>
+        <goal id="allocate" type="maintenance"/>
+        <goal id="collect" type="maintenance"/>
+        <goal id="deliver" type="maintenance"/>
+      </plan></goal>
+      <mission id="survey" min="0" max="8"><goal id="explore"/></mission>
+      <mission id="allocation" min="1" max="1"><goal id="allocate"/></mission>
+      <mission id="mining_work" min="0" max="8"><goal id="collect"/><goal id="deliver"/></mission>
+    </scheme>
+  </functional-specification>
+  <normative-specification>
+    <norm id="n_scout" type="permission" role="scout" mission="survey"/>
+    <norm id="n_miner" type="permission" role="miner" mission="mining_work"/>
+    <norm id="n_coordinator" type="permission" role="coordinator" mission="allocation"/>
+  </normative-specification>
+</organisational-specification>

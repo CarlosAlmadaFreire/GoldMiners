@@ -43,12 +43,15 @@ sourceSets {
 
 task run (type: JavaExec, dependsOn: 'classes') {
     description 'runs the application'
+    timeout = java.time.Duration.ofMinutes(3)
     group ' JaCaMo'
-    doFirst {
-        mkdir 'log'
+    doFirst { mkdir 'log' }
+    mainClass = project.hasProperty('projectFile') ? 'jacamo.infra.JaCaMoLauncher' : 'contest.MatchLauncher'
+    args project.hasProperty('projectFile') ? project.property('projectFile') : providers.gradleProperty('config').getOrElse('config/default.properties')
+    systemProperty 'java.awt.headless', 'true'
+    ['seed','red','blue','steps','exploration','output','agents'].each { key ->
+        if (project.hasProperty(key)) systemProperty "contest.${key}", project.property(key)
     }
-    mainClass = 'jacamo.infra.JaCaMoLauncher'
-    args 'gold_miners.jcm'
     classpath sourceSets.main.runtimeClasspath
 }
 
@@ -61,4 +64,27 @@ task buildJCMDeps (type: JavaExec, dependsOn: 'classes') {
 clean {
     delete 'bin'
     delete 'build'
+}
+
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+test { useJUnitPlatform() }
+tasks.register('experiment', JavaExec) {
+    dependsOn classes
+    mainClass = 'contest.Experiment'
+    classpath = sourceSets.main.runtimeClasspath
+    args providers.gradleProperty('config').getOrElse('config/default.properties'), providers.gradleProperty('seeds').getOrElse('5'),
+         providers.gradleProperty('output').getOrElse('build/results/policies.csv')
+}
+
+// Compile once; experiment subprocesses reuse this exact runtime classpath.
+tasks.register('preparar') {
+    dependsOn classes
+    outputs.file(layout.buildDirectory.file('runtime-classpath.txt'))
+    doLast {
+        file('build/runtime-classpath.txt').text = sourceSets.main.runtimeClasspath.asPath
+    }
 }
